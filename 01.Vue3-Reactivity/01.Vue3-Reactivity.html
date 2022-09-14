@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    let price = 5;
+    let quantity = 2;
+    let total = 0;
+    let dep = new Set() //Set 不允许重复值
+    let effect = () => {
+        total = price * quantity
+    }
+
+    function track() {
+        dep.add(effect)
+    }
+
+    function trigger() {
+        dep.forEach(effect => {
+            console.log(effect)
+            return effect()
+        })
+    }
+    track()
+    effect()
+</script>
+
+</html>

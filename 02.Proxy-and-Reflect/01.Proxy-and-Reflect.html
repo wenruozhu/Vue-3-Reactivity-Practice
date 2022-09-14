@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    let product = {
+        price: 5,
+        quantity: 2
+    }
+    // console.log("quantity is " + product.quantity)
+    // console.log("quantity is " + product['quantity'])
+    // console.log("quantity is " + Reflect.get(product, 'quantity'))
+    let proxiedProduct = new Proxy(product, {
+        //监听目标对象、某个key、receiver为接收器
+        // receiver将传递到我们的Reflect调用中，它保证了当我们的对象有继承自其它对象的值或函数时，this指针能正确的指向使用（的对象）
+        // 
+        get(target, key, receiver) {
+            // console.log(target, key, receiver)
+            console.log('Get was called with key = ' + key)
+            return Reflect.get(target, key, receiver)
+        },
+        set(target, key, value, receiver) {
+            // console.log(target, key, receiver)
+            console.log('Set was called with key = ' + key + ' value = ' + value)
+            return Reflect.get(target, key, value, receiver)
+        }
+    })
+    proxiedProduct.quantity = 3
+    console.log(proxiedProduct.quantity)
+</script>
+
+</html>
