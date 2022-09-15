@@ -23,18 +23,21 @@
             get(target, key, receiver) {
                 // console.log(target, key, receiver)
                 console.log('Get was called with key = ' + key)
+                console.log('Reflect.get', Reflect.get(target, key, receiver))
                 return Reflect.get(target, key, receiver)
             },
             set(target, key, value, receiver) {
                 // console.log(target, key, receiver)
                 console.log('Set was called with key = ' + key + ' value = ' + value)
-                return Reflect.get(target, key, value, receiver)
+                console.log("newValue", Reflect.set(target, key, value, receiver))
+                return Reflect.set(target, key, value, receiver)
             }
         }
         return new Proxy(product, handler)
 
     }
     const proxiedProduct = reactive(product)
+    console.log(proxiedProduct)
     proxiedProduct.quantity = 3
     console.log(proxiedProduct.quantity)
 </script>

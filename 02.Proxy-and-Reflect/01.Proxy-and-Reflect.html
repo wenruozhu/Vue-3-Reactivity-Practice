@@ -31,7 +31,7 @@
         set(target, key, value, receiver) {
             // console.log(target, key, receiver)
             console.log('Set was called with key = ' + key + ' value = ' + value)
-            return Reflect.get(target, key, value, receiver)
+            return Reflect.set(target, key, value, receiver)
         }
     })
     proxiedProduct.quantity = 3
