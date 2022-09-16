@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    let activeEffect = null
+
+    function effect(eff) {
+        activeEffect = eff
+        // console.log(activeEffect)
+        activeEffect()
+        activeEffect = null
+    }
+
+    const targetMap = new WeakMap() //键是一个对象
+    // targetMap.set(product, 'example code to test')
+    // console.log(targetMap, targetMap.get(product))
+    function track(target, key) {
+        if (activeEffect) {
+
+
+            let depsMap = targetMap.get(target)
+            // console.log(depsMap, depsMap)
+            if (!depsMap) {
+                targetMap.set(target, (depsMap = new Map()))
+            }
+            let dep = depsMap.get(key)
+
+            if (!dep) {
+                depsMap.set(key, (dep = new Set()))
+            }
+
+            dep.add(activeEffect)
+            console.log(dep)
+        }
+    }
+
+    function trigger(target, key) {
+        const depsMap = targetMap.get(target)
+        if (!depsMap) return
+        let dep = depsMap.get(key)
+        if (dep) {
+            dep.forEach(effect => {
+                effect()
+            });
+        }
+    }
+
+    function reactive(target) {
+        const handler = {
+
+            get(target, key, receiver) {
+                // console.log('line 48', target, key, receiver)
+                // console.log('Get was called with key = ' + key)
+                let result = Reflect.get(target, key, receiver)
+                track(target, key)
+                return result
+            },
+            set(target, key, value, receiver) {
+                // console.log('line 55', target, key, value, receiver)
+                let oldValue = target[key]
+                // console.log('Set was called with key = ' + key + ' value = ' + value)
+                let result = Reflect.set(target, key, value, receiver)
+                // console.log("oldValue, result", oldValue, result)
+                if (oldValue != value) {
+                    trigger(target, key)
+                }
+                return result
+
+            }
+        }
+        return new Proxy(target, handler)
+
+    }
+    let product = reactive({
+        price: 5,
+        quantity: 2
+    })
+    let user = {
+        firstName: 'jack',
+        lastName: 'ma',
+        get fullName() {
+            return `${this.firstName} ${this.lastName}`
+        },
+        set fullName(value) {
+            console.log(this.firstName, this.lastName)
+            this.firstName = value.split(' ')[0]
+            this.lastName = value.split(' ')[1]
+
+            // [String(this.firstName), String(this.lastName)] = value.split(' ')
+        },
+    }
+    console.log('Name is', user.fullName)
+    user.fullName = 'wenruo zhu'
+    console.log('Name is', user.fullName)
+    // user.
+    /* let salePrice = ref(0);
+    let total = 0;
+    effect(() => {
+        total = salePrice.value * product.quantity
+    })
+    effect(() => {
+        salePrice.value = product.price * 0.9
+    }) */
+</script>
+
+</html>
