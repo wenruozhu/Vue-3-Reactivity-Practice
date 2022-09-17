@@ -16,7 +16,7 @@
 
     function effect(eff) {
         activeEffect = eff
-        console.log(19, activeEffect)
+        // console.log(19, activeEffect)
         activeEffect()
         activeEffect = null
     }
@@ -24,9 +24,9 @@
     function ref(raw) {
         const r = {
             get value() {
-                console.log(27, r, 'value')
+                // console.log(27, r, 'value')
                 track(r, 'value')
-                console.log(29, raw)
+                // console.log(29, raw)
                 return raw
             },
             set value(newValue) {
@@ -40,11 +40,19 @@
         }
         return r
     }
+
+    function computed(getter) {
+        let result = ref()
+        effect(() => (result.value = getter()))
+        return result
+    }
     const targetMap = new WeakMap() //键是一个对象
     // targetMap.set(product, 'example code to test')
     // console.log(targetMap, targetMap.get(product))
     function track(target, key) {
         if (activeEffect) {
+
+
             let depsMap = targetMap.get(target)
             // console.log(depsMap, depsMap)
             if (!depsMap) {
@@ -57,7 +65,7 @@
             }
 
             dep.add(activeEffect)
-            console.log(58, dep)
+            // console.log(58, dep)
         }
     }
 
@@ -119,21 +127,18 @@
     // console.log('Name is', user.fullName)
     // user.fullName = 'wenruo zhu'
     // console.log('Name is', user.fullName)
-    let salePrice = ref(0);
-    let total = 0;
-
-    effect(() => {
-        salePrice.value = product.price * 0.9
+    // user.
+    let salePrice = computed(() => {
+        return product.price * 0.6
+    });
+    let total = computed(() => {
+        return salePrice.value * product.quantity
     })
 
-    effect(() => {
-        total = salePrice.value * product.quantity
-    })
+    console.log(140, total.value, salePrice.value)
 
-    console.log(133, total, salePrice.value)
-
-    product.price = 30
-    console.log(136, total, salePrice.value)
+    product.price = 50
+    console.log(143, total.value, salePrice.value)
 </script>
 
 </html>
