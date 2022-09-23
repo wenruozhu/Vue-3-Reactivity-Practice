@@ -40,6 +40,7 @@
         }
         return r
     }
+    // WeakMap键是一个对象，不再从任何代码访问，目标可以被垃圾回收，关联值条目也会被垃圾回收
     const targetMap = new WeakMap() //键是一个对象
     // targetMap.set(product, 'example code to test')
     // console.log(targetMap, targetMap.get(product))
@@ -48,6 +49,7 @@
             let depsMap = targetMap.get(target)
             // console.log(depsMap, depsMap)
             if (!depsMap) {
+                // Map 任何值可作为key，缺点是key一个字符串时，不能自动删除内存关联，没有垃圾回收
                 targetMap.set(target, (depsMap = new Map()))
             }
             let dep = depsMap.get(key)
@@ -111,8 +113,7 @@
     //     },
     //     set fullName(value) {
     //         console.log(this.firstName, this.lastName)
-    //         this.firstName = value.split(' ')[0]
-    //         this.lastName = value.split(' ')[1]
+    //         [this.firstName, this.lastName] = value.split(' ')[0]
     //     },
     // }
 
