@@ -40,6 +40,9 @@
         }
         return r
     }
+    // Map与WeakMap简单区别
+    // Map的键值可以是原始数据类型和引用类型，WeakMap的键值只能是引用类型（object）
+    // Map可以迭代遍历键，WeakMap不可迭代遍历键
     // WeakMap键是一个对象，不再从任何代码访问，目标可以被垃圾回收，关联值条目也会被垃圾回收
     const targetMap = new WeakMap() //键是一个对象
     // targetMap.set(product, 'example code to test')
